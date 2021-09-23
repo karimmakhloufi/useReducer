@@ -1,45 +1,60 @@
-import { useState } from "react";
+import { useReducer } from "react";
+
+const reducer = (state, action) => {
+  console.log("oldState", state);
+  console.log("action", action);
+
+  switch (action.type) {
+    case "new todo":
+      if (state.locked) {
+        console.log("state is locked, no update");
+        return state;
+      } else {
+        const newState = {
+          ...state,
+          todos: [
+            ...state.todos,
+            { id: state.lastId + 1, message: state.inputValue },
+          ],
+          lastId: state.lastId + 1,
+          inputValue: "",
+        };
+        console.log("newState", newState);
+        return newState;
+      }
+    default:
+      throw new Error();
+  }
+};
+
+const initialState = {
+  lastId: 0,
+  locked: false,
+  todos: [],
+  inputValue: "Todo default message",
+};
 
 const App = () => {
-  const [todos, setTodo] = useState([]);
-  const [inputValue, setInput] = useState("");
-  const [id, setId] = useState(0);
-  const [locked, setLocked] = useState(false);
+  const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <>
       Locked ?
-      <input
-        type="checkbox"
-        value={locked}
-        onChange={() => setLocked(!locked)}
-      />
+      <input type="checkbox" value={state.locked} />
       <br />
-      <input value={inputValue} onChange={(e) => setInput(e.target.value)} />
+      <input value={state.inputValue} />
       <button
         onClick={() => {
-          if (!locked) {
-            setTodo([...todos, { id, message: inputValue }]);
-            setInput("");
-            setId(id + 1);
-          }
+          dispatch({ type: "new todo" });
         }}
       >
         add
       </button>
       <br />
-      {todos.map((todo) => (
+      {state.todos.map((todo) => (
         <>
           <span>{todo.message}</span>
           <span>{todo.id}</span>
-          <button
-            onClick={() => {
-              if (!locked) {
-                setTodo(todos.filter((el) => el.id !== todo.id));
-              }
-            }}
-          >
-            Delete
-          </button>
+          <button>Delete</button>
           <br />
         </>
       ))}
