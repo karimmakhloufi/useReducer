@@ -61,7 +61,9 @@ const initialState = {
 };
 
 const App = () => {
-  const [state, dispatch, history] = useHistoryReducer(reducer, initialState);
+  const [state, dispatch, history] = useHistoryReducer(reducer, initialState, {
+    useCheckpoints: true,
+  });
   return (
     <>
       <div>
@@ -83,7 +85,7 @@ const App = () => {
       />
       <button
         onClick={() => {
-          dispatch({ type: "new todo" });
+          dispatch({ type: "new todo", historyCheckpoint: true });
         }}
       >
         add
@@ -94,7 +96,13 @@ const App = () => {
           <span>{todo.message}</span>
           <span>{todo.id}</span>
           <button
-            onClick={() => dispatch({ type: "delete post", payload: todo.id })}
+            onClick={() =>
+              dispatch({
+                type: "delete post",
+                payload: todo.id,
+                historyCheckpoint: true,
+              })
+            }
           >
             Delete
           </button>
