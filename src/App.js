@@ -5,6 +5,19 @@ const reducer = (state, action) => {
   console.log("action", action);
 
   switch (action.type) {
+    case "new input":
+      if (state.locked) {
+        console.log("input is locked, no update");
+        return state;
+      } else {
+        const newState = {
+          ...state,
+          inputValue: action.payload,
+        };
+        console.log("newState", newState);
+        return newState;
+      }
+
     case "delete post":
       if (state.locked) {
         console.log("state is locked, no update");
@@ -54,7 +67,12 @@ const App = () => {
       Locked ?
       <input type="checkbox" value={state.locked} />
       <br />
-      <input value={state.inputValue} />
+      <input
+        value={state.inputValue}
+        onChange={(e) => {
+          dispatch({ type: "new input", payload: e.target.value });
+        }}
+      />
       <button
         onClick={() => {
           dispatch({ type: "new todo" });
