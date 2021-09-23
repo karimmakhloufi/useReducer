@@ -4,14 +4,24 @@ const App = () => {
   const [todos, setTodo] = useState([]);
   const [inputValue, setInput] = useState("");
   const [id, setId] = useState(0);
+  const [locked, setLocked] = useState(false);
   return (
     <>
+      Locked ?
+      <input
+        type="checkbox"
+        value={locked}
+        onChange={() => setLocked(!locked)}
+      />
+      <br />
       <input value={inputValue} onChange={(e) => setInput(e.target.value)} />
       <button
         onClick={() => {
-          setTodo([...todos, { id, message: inputValue }]);
-          setInput("");
-          setId(id + 1);
+          if (!locked) {
+            setTodo([...todos, { id, message: inputValue }]);
+            setInput("");
+            setId(id + 1);
+          }
         }}
       >
         add
@@ -23,7 +33,9 @@ const App = () => {
           <span>{todo.id}</span>
           <button
             onClick={() => {
-              setTodo(todos.filter((el) => el.id !== todo.id));
+              if (!locked) {
+                setTodo(todos.filter((el) => el.id !== todo.id));
+              }
             }}
           >
             Delete
