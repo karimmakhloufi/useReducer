@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import useHistoryReducer from "react-use-history-reducer";
 
 const reducer = (state, action) => {
   console.log("oldState", state);
@@ -61,9 +61,17 @@ const initialState = {
 };
 
 const App = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch, history] = useHistoryReducer(reducer, initialState);
   return (
     <>
+      <div>
+        <button disabled={!history.canUndo} onClick={history.undo}>
+          Undo
+        </button>
+        <button disabled={!history.canRedo} onClick={history.redo}>
+          Redo
+        </button>
+      </div>
       Locked ?
       <input type="checkbox" value={state.locked} />
       <br />
