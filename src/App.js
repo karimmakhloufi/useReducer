@@ -5,6 +5,19 @@ const reducer = (state, action) => {
   console.log("action", action);
 
   switch (action.type) {
+    case "delete post":
+      if (state.locked) {
+        console.log("state is locked, no update");
+        return state;
+      } else {
+        const newState = {
+          ...state,
+          todos: state.todos.filter((el) => el.id !== action.payload),
+        };
+        console.log("newState", newState);
+        return newState;
+      }
+
     case "new todo":
       if (state.locked) {
         console.log("state is locked, no update");
@@ -54,7 +67,11 @@ const App = () => {
         <>
           <span>{todo.message}</span>
           <span>{todo.id}</span>
-          <button>Delete</button>
+          <button
+            onClick={() => dispatch({ type: "delete post", payload: todo.id })}
+          >
+            Delete
+          </button>
           <br />
         </>
       ))}
